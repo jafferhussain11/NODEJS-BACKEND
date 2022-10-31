@@ -1,0 +1,16 @@
+{
+  "name": "nodemon_package",
+  "version": "1.0.0",
+  "description": "server launch with npm",
+  "main": "nodemon.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon nodemon.js",
+    "start-server": "nodemon nodemon.js"
+  },
+  "author": "j&a",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
