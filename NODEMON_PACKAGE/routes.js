@@ -35,7 +35,9 @@ const requestHandler = (req, res) => {
         req.on('end', ()=>{
     
             const parsedBody = Buffer.concat(body).toString(); //text data
+            console.log(parsedBody);
             const message = parsedBody.split('=')[1];
+            console.log(message);
             fs.writeFile('message.txt', message, (err)=>{
     
                 res.statusCode = 302;
