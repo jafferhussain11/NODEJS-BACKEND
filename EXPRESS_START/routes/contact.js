@@ -5,13 +5,9 @@ const rootDir = require('../Utils/path.js');
 
 const router = express.Router();
 
-router.get('/contact',(req, res, next) => {
-    
-    res.sendFile(path.join(rootDir,'views','contact.html'));
-});
+const productController = require('../controllers/products.js');
 
-router.post('/contact',(req, res, next) => {
+router.get('/contact',productController.getContact);
 
-    res.sendFile(path.join(rootDir,'views','success.html'));
-});
+router.post('/contact',productController.postContact);
 module.exports = router;

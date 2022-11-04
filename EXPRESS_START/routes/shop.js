@@ -1,15 +1,11 @@
 const express = require('express');
 const path = require('path');
 
-const rootDir = require('../Utils/path.js');
 
 const router = express.Router(); //router is a mini express app // 
+const productController = require('../controllers/products.js');
 
 
-router.get('/',(req, res, next) => {
-    
-    res.sendFile(path.join(rootDir,'views','shop.html')); // __dirname is a global variable that gives us the absolute path to the current folder ie routes
-
-});
+router.get('/',productController.getShopProducts);
 
 module.exports = router;
