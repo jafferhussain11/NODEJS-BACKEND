@@ -15,8 +15,9 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   const product = new Product(null,title, imageUrl, description, price);
-  product.save();
-  res.redirect('/');
+  product.save().then(()=>{
+    res.redirect('/');
+  }).catch(err=>console.log(err));
 };
 
 exports.getEditProduct = (req, res, next) => {
@@ -26,19 +27,19 @@ exports.getEditProduct = (req, res, next) => {
     return res.redirect('/');
   }
   const prodId = req.params.productId; //this is a route parameter
-  Product.findById(prodId, product => {
+  Product.findById(prodId).then(([product])=>{
 
-    if(!product){
-      return res.redirect('/');
-    }
-    res.render('admin/edit-product', {    
-    pageTitle: 'Edit Product',
-    path: '/admin/edit-product',
-    editing: editMode,
-    product: product
+          if(!product){
+          return res.redirect('/');
+          }
+          res.render('admin/edit-product', {
+          pageTitle: 'Edit Product',
+          path: '/admin/edit-product',
+          editing: editMode,
+          product: product[0]
+          });
    
-   });
-  });
+    }).catch(err=>console.log(err));
 };
 exports.postEditProduct = (req, res, next) => {
 
@@ -53,12 +54,32 @@ exports.postEditProduct = (req, res, next) => {
 
 
 }
+exports.getDeleteProduct = (req, res, next) => {
+
+  const deleteMode = req.query.delete;//this is a query parameter
+  //console.log(deleteMode);
+  if(!deleteMode){
+    return res.redirect('/');
+  }
+  const prodId = req.params.productId;
+  //console.log(prodId);
+  Product.deleteById(prodId).then(()=>{
+    res.redirect('/admin/products');
+  }).catch(err=>console.log(err));
+}
+
+
+
+
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll(products => {
+  Product.fetchAll().then( ([rows])=>{
+
     res.render('admin/products', {
-      prods: products,
+      prods: rows,
       pageTitle: 'Admin Products',
       path: '/admin/products'
-    });
-  });
+    })
+ 
+  }).catch(err=>console.log(err));
+
 };
