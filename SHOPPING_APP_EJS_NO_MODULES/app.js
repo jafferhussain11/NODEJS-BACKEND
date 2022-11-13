@@ -3,7 +3,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const db = require('./util/database'); //this is a promise based version of the mysql2 package
+const sequelize = require('./util/database'); //importing the sequelize object
 
 const errorController = require('./controllers/error');
 
@@ -24,4 +24,8 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-app.listen(5000);
+sequelize.sync().then(result => {//this will create the tables in the database from all the models defined in the sequelize object
+
+    app.listen(5000);
+}).catch(err=>console.log(err));
+
