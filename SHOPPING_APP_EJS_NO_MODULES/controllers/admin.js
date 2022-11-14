@@ -19,7 +19,8 @@ exports.postAddProduct = (req, res, next) => {
     title: title,
     price: price,
     imageUrl: imageUrl,
-    description: description
+    description: description,
+    userId: req.user.id
 
   }).then((result)=>{
     console.log(result);
@@ -34,19 +35,18 @@ exports.getEditProduct = (req, res, next) => {
     return res.redirect('/');
   }
   const prodId = req.params.productId; //this is a route parameter
-  Product.findByPk(prodId).then((product)=>{
+  req.user.getProducts({where: {id: prodId}}).then((products)=>{
 
-      //console.log(product);    
-          if(!product){
-          return res.redirect('/');
-          }
-          res.render('admin/edit-product', {
-          pageTitle: 'Edit Product',
-          path: '/admin/edit-product',
-          editing: editMode,
-          product: product
-          });
-   
+    const product = products[0];
+    if(!product){
+      return res.redirect('/');
+    }
+    res.render('admin/edit-product', {
+      pageTitle: 'Edit Product',
+      path: '/admin/edit-product',
+      editing: editMode,
+      product: product
+    });
     }).catch(err=>console.log(err));
 };
 exports.postEditProduct = (req, res, next) => {
@@ -97,7 +97,8 @@ exports.getDeleteProduct = (req, res, next) => {
 
 
 exports.getProducts = (req, res, next) => {
-  Product.findAll().then( (products)=>{
+  req.user
+     .getProducts().then( (products)=>{
 
     res.render('admin/products', {
       prods: products,
