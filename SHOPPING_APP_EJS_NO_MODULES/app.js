@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const sequelize = require('./util/database'); //importing the sequelize object
 const Product = require('./models/product'); //importing the product model
 const User = require('./models/user'); //importing the user model
+const Cart = require('./models/cart'); //importing the cart model
+const CartItem = require('./models/cart-item'); //importing the cart-item model
 
 const errorController = require('./controllers/error');
 
@@ -36,6 +38,10 @@ app.use(errorController.get404);
 
 Product.belongsTo(User, {constraints: true, onDelete: 'CASCADE'}); //this is a sequelize method
 User.hasMany(Product); //this is a sequelize method
+User.hasOne(Cart); //one to one relationship between user and cart
+Cart.belongsToMany(Product, {through: CartItem}); //many to many relationship between cart and product
+Product.belongsToMany(Cart, {through: CartItem}); //many to many relationship between product and cart
+
 
 //remove force: true in production
 sequelize.sync()
@@ -53,7 +59,9 @@ sequelize.sync()
         })
         .then(user => {
             //console.log(user);
-            app.listen(5000);
+            return user.createCart();
+            
         })
+        .then(app.listen(5000))
         .catch(err=>console.log(err));
 
